@@ -6,23 +6,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.vidler.vidler.presentation.appnavigator.AppNavigatorScreen
 import com.vidler.vidler.presentation.home.HomeScreen
 
 @Composable
-fun NavGraph(startDestination: String) {
+fun NavGraph() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Route.AppNavigator.route
     ) {
         navigation(
-            route = Route.AppStartNavigation.route,
-            startDestination = Route.HomeScreen.route
+            route = Route.AppNavigator.route,
+            startDestination = Route.AppNavigatorScreen.route
         ) {
             composable(
-                route = Route.HomeScreen.route
+                route = Route.AppNavigatorScreen.route
             ) {
-                HomeScreen()
+                AppNavigatorScreen()
             }
         }
     }
