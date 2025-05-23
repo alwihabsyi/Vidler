@@ -20,18 +20,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vidler.vidler.presentation.collection.components.CollectionItem
+import com.vidler.vidler.presentation.collection.components.FileInputDialog
 import com.vidler.vidler.util.SnackBarManager
 
 @Composable
 fun CollectionScreen(
     modifier: Modifier = Modifier, state: CollectionState
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -81,7 +88,7 @@ fun CollectionScreen(
             modifier = Modifier
                 .size(62.dp)
                 .align(Alignment.BottomEnd), onClick = {
-                SnackBarManager.show("Inilah saatnya", "Action")
+                    showDialog = true
             }) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -89,6 +96,11 @@ fun CollectionScreen(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(32.dp)
             )
+        }
+
+        FileInputDialog(showDialog = showDialog) {
+            SnackBarManager.show("Ini adalah aksi")
+            showDialog = false
         }
     }
 }
