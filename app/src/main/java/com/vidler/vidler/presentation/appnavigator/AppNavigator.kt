@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,12 +23,15 @@ import androidx.navigation.compose.rememberNavController
 import com.vidler.vidler.presentation.appnavigator.components.AppBottomNavigation
 import com.vidler.vidler.presentation.appnavigator.components.BottomNavigationItem
 import com.vidler.vidler.presentation.collection.CollectionScreen
+import com.vidler.vidler.presentation.collection.CollectionViewModel
+import com.vidler.vidler.presentation.common.GlobalSnackbarHost
 import com.vidler.vidler.presentation.home.HomeScreen
 import com.vidler.vidler.presentation.navgraph.Route
 import com.vidler.vidler.presentation.schedule.ScheduleScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AppNavigatorScreen(modifier: Modifier = Modifier) {
+fun AppNavigatorScreen() {
     val bottomNavigationItems = remember {
         listOf(
             BottomNavigationItem(icon = Icons.Default.Home, text = "Home"),
@@ -80,18 +84,21 @@ fun AppNavigatorScreen(modifier: Modifier = Modifier) {
         NavHost(
             navController = navController,
             startDestination = Route.HomeScreen.route,
-            modifier = Modifier.padding(bottom = bottomPadding)
+            modifier = Modifier.padding(bottom = bottomPadding, top = 40.dp)
         ) {
             composable(Route.HomeScreen.route) {
                 HomeScreen()
             }
             composable(Route.CollectionScreen.route) {
-                CollectionScreen()
+                val viewModel: CollectionViewModel = koinViewModel()
+                CollectionScreen(state = viewModel.state.value)
             }
             composable(Route.ScheduleScreen.route) {
                 ScheduleScreen()
             }
         }
+
+        GlobalSnackbarHost(Modifier.padding(bottom = bottomPadding + 10.dp))
     }
 }
 

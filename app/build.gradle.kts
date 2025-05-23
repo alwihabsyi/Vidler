@@ -6,6 +6,8 @@ plugins {
     id("kotlin-parcelize")
 }
 
+apply(from = "../shared.dependencies.gradle")
+
 android {
     namespace = "com.vidler.vidler"
     compileSdk = 35
@@ -42,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -59,29 +62,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Accompanist
-    implementation(libs.accompanist.systemuicontroller)
-
-    // Splash Screen
-    implementation(libs.androidx.core.splashscreen)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
-
-    // Compose dependencies
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
-    // Coil
-    implementation(libs.coil.compose)
-
-    // Room
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-
-    // Kotlin Extensions and Coroutines support for Room
-    implementation(libs.androidx.room.ktx)
 }

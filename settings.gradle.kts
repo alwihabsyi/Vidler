@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Vidler"
 include(":app")
+include(":core")
