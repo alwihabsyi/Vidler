@@ -4,5 +4,5 @@ import android.net.Uri
 
 sealed class CollectionEvent {
     data class OnStorageMove(val uris: List<Uri>): CollectionEvent()
-    data class OnDownload(val url: String): CollectionEvent()
+    data class OnDownload(val name: String, val url: String): CollectionEvent()
 }

@@ -11,10 +11,16 @@ object SnackBarManager {
     private val _snackbarState = mutableStateOf<SnackbarData?>(null)
     val snackbarState: State<SnackbarData?> = _snackbarState
 
-    fun show(message: String, actionLabel: String? = null, duration: Long = 1500L, onAction: (() -> Unit)? = null) {
-        _snackbarState.value = SnackbarData(message, actionLabel, onAction)
+    fun show(
+        message: String,
+        actionLabel: String? = null,
+        duration: Long? = 1500L,
+        actionDismiss: Boolean? = true,
+        onAction: (() -> Unit)? = null
+    ) {
+        _snackbarState.value = SnackbarData(message, actionLabel, actionDismiss, onAction)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        if (duration != null) CoroutineScope(Dispatchers.Main).launch {
             delay(duration)
             dismiss()
         }
@@ -27,6 +33,7 @@ object SnackBarManager {
     data class SnackbarData(
         val message: String,
         val actionLabel: String? = null,
+        val actionDismiss: Boolean? = true,
         val onAction: (() -> Unit)? = null
     )
 }

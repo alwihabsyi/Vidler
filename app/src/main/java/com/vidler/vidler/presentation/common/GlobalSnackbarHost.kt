@@ -26,7 +26,7 @@ fun GlobalSnackbarHost(modifier: Modifier = Modifier) {
                 actionLabel = snackbarData?.actionLabel.orEmpty(),
                 onAction = {
                     snackbarData?.onAction?.invoke()
-                    SnackBarManager.dismiss()
+                    if (snackbarData?.actionDismiss == true) SnackBarManager.dismiss()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

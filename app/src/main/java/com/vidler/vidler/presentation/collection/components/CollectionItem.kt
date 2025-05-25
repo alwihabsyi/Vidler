@@ -2,6 +2,7 @@ package com.vidler.vidler.presentation.collection.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,28 +31,30 @@ import com.vidler.core.domain.entity.Video
 import com.vidler.vidler.util.formatDuration
 
 @Composable
-fun CollectionItem(modifier: Modifier = Modifier, videoItem: Video) {
+fun CollectionItem(modifier: Modifier = Modifier, videoItem: Video, onItemClick: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(15.dp))
+            .clickable { onItemClick() }
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically,
+
+        ) {
         videoItem.thumbnail?.let { bitmap ->
             Image(
                 bitmap = bitmap.asImageBitmap(),
                 contentDescription = "Video thumbnail",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(70.dp)
                     .clip(RoundedCornerShape(15.dp)),
                 contentScale = ContentScale.Crop
             )
         } ?: Box(
             modifier = Modifier
-                .size(100.dp)
+                .size(70.dp)
                 .clip(RoundedCornerShape(15.dp))
                 .background(Color.Gray),
             contentAlignment = Alignment.Center
@@ -81,5 +84,7 @@ fun CollectionItem(modifier: Modifier = Modifier, videoItem: Video) {
 @Preview
 @Composable
 private fun CollectionItemPreview() {
-    CollectionItem(videoItem = Video("Video Satu", "/asd/asd", 10000, null))
+    CollectionItem(videoItem = Video("Video Satu", "/asd/asd", 10000, null)) {
+
+    }
 }

@@ -18,7 +18,7 @@ import java.io.FileOutputStream
 
 class FileHelper(private val context: Context) {
 
-    private fun getAppDirectory(): File {
+    fun getAppDirectory(): File {
         val mediaDir = File(
             Environment.getExternalStorageDirectory(), "Android/media/${context.packageName}/media"
         )

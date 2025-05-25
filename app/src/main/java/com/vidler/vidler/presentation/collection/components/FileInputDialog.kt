@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,13 +27,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.net.toUri
 
 @Composable
-fun FileInputDialog(modifier: Modifier = Modifier, showDialog: Boolean, onStoragePic: (List<Uri>) -> Unit,onDismiss: () -> Unit) {
-    var videoUri by remember { mutableStateOf<Uri?>(null) }
+fun FileInputDialog(
+    modifier: Modifier = Modifier,
+    showDialog: Boolean,
+    onStoragePic: (List<Uri>) -> Unit,
+    onUrl: (String, String) -> Unit,
+    onDismiss: () -> Unit
+) {
     var isUrlSelected by remember { mutableStateOf(false) }
+    var nameInput by remember { mutableStateOf(TextFieldValue()) }
     var urlInput by remember { mutableStateOf(TextFieldValue()) }
+    val pickVideos =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris: List<Uri> ->
+            if (uris.isNotEmpty()) {
+                onStoragePic(uris)
+                onDismiss()
+            }
+        }
 
     AnimatedVisibility(visible = showDialog) {
         Dialog(onDismissRequest = { onDismiss() }) {
@@ -62,36 +73,41 @@ fun FileInputDialog(modifier: Modifier = Modifier, showDialog: Boolean, onStorag
                         Color.White,
                         disabledContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
                         disabledContentColor = Color.White
-                    ), shape = RoundedCornerShape(10.dp), onClick = { isUrlSelected = false }) {
+                    ), shape = RoundedCornerShape(10.dp), onClick = { pickVideos.launch(arrayOf("video/*")) }) {
                     Text("From Storage")
                 }
 
                 if (isUrlSelected) {
-                    UrlInputDialog(urlInput) { newUrl ->
+                    UrlInputDialog(nameInput, urlInput) { newName, newUrl ->
+                        nameInput = newName
                         urlInput = newUrl
-                        videoUri = newUrl.text.toUri()
+                        onUrl(newName.text, newUrl.text)
                         onDismiss()
                     }
                 }
-
-                if (!isUrlSelected) {
-                    StorageInputDialog { uris ->
-                        onStoragePic(uris)
-                        onDismiss()
-                    }
-                }
-
-                videoUri?.let {}
             }
         }
     }
 }
 
 @Composable
-fun UrlInputDialog(urlInput: TextFieldValue, onSubmit: (TextFieldValue) -> Unit) {
+fun UrlInputDialog(
+    nameInput: TextFieldValue,
+    urlInput: TextFieldValue,
+    onSubmit: (TextFieldValue, TextFieldValue) -> Unit
+) {
+    var nameInputValue by remember { mutableStateOf(nameInput) }
     var inputValue by remember { mutableStateOf(urlInput) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        Text("Enter Video Name:")
+        OutlinedTextField(
+            value = nameInputValue,
+            onValueChange = { nameInputValue = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         Text("Enter Video URL:")
         OutlinedTextField(
             value = inputValue,
@@ -106,29 +122,10 @@ fun UrlInputDialog(urlInput: TextFieldValue, onSubmit: (TextFieldValue) -> Unit)
                 Color.White,
                 disabledContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
                 disabledContentColor = Color.White
-            ), shape = RoundedCornerShape(10.dp), onClick = { onSubmit(inputValue) }) {
+            ),
+            shape = RoundedCornerShape(10.dp),
+            onClick = { onSubmit(nameInputValue, inputValue) }) {
             Text("Submit")
         }
-    }
-}
-
-@Composable
-fun StorageInputDialog(onUrisSelected: (List<Uri>) -> Unit) {
-    val pickVideos =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris: List<Uri> ->
-            if (uris.isNotEmpty()) {
-                onUrisSelected(uris)
-            }
-        }
-
-    Button(
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(10.dp),
-        onClick = { pickVideos.launch(arrayOf("video/*")) }
-    ) {
-        Text("Select Videos from Storage")
     }
 }
