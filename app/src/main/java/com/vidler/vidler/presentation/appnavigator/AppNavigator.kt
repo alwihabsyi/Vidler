@@ -54,32 +54,24 @@ fun AppNavigatorScreen() {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
+        modifier = Modifier.fillMaxSize(), bottomBar = {
             AppBottomNavigation(
-                items = bottomNavigationItems,
-                selected = selectedItem,
-                onItemClicked = { index ->
+                items = bottomNavigationItems, selected = selectedItem, onItemClicked = { index ->
                     when (index) {
                         0 -> navigateToTab(
-                            navController = navController,
-                            route = Route.HomeScreen.route
+                            navController = navController, route = Route.HomeScreen.route
                         )
 
                         1 -> navigateToTab(
-                            navController = navController,
-                            route = Route.CollectionScreen.route
+                            navController = navController, route = Route.CollectionScreen.route
                         )
 
                         2 -> navigateToTab(
-                            navController = navController,
-                            route = Route.ScheduleScreen.route
+                            navController = navController, route = Route.ScheduleScreen.route
                         )
                     }
-                }
-            )
-        }
-    ) {
+                })
+        }) {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
@@ -91,7 +83,7 @@ fun AppNavigatorScreen() {
             }
             composable(Route.CollectionScreen.route) {
                 val viewModel: CollectionViewModel = koinViewModel()
-                CollectionScreen(state = viewModel.state.value)
+                CollectionScreen(state = viewModel.state.value, onEvent = viewModel::onEvent)
             }
             composable(Route.ScheduleScreen.route) {
                 ScheduleScreen()

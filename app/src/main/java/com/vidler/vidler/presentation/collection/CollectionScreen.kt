@@ -31,11 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vidler.vidler.presentation.collection.components.CollectionItem
 import com.vidler.vidler.presentation.collection.components.FileInputDialog
-import com.vidler.vidler.util.SnackBarManager
 
 @Composable
 fun CollectionScreen(
-    modifier: Modifier = Modifier, state: CollectionState
+    modifier: Modifier = Modifier,
+    state: CollectionState,
+    onEvent: (CollectionEvent)-> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -88,7 +89,7 @@ fun CollectionScreen(
             modifier = Modifier
                 .size(62.dp)
                 .align(Alignment.BottomEnd), onClick = {
-                    showDialog = true
+                showDialog = true
             }) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -98,9 +99,10 @@ fun CollectionScreen(
             )
         }
 
-        FileInputDialog(showDialog = showDialog) {
-            SnackBarManager.show("Ini adalah aksi")
-            showDialog = false
-        }
+        FileInputDialog(
+            showDialog = showDialog,
+            onStoragePic = { onEvent(CollectionEvent.OnStorageMove(it)) },
+            onDismiss = { showDialog = false }
+        )
     }
 }

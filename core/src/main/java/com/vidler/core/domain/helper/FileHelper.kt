@@ -1,8 +1,10 @@
 package com.vidler.core.domain.helper
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import com.vidler.core.domain.entity.Video
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
+import java.io.FileOutputStream
 
 class FileHelper(private val context: Context) {
 
@@ -19,7 +22,12 @@ class FileHelper(private val context: Context) {
         val mediaDir = File(
             Environment.getExternalStorageDirectory(), "Android/media/${context.packageName}/media"
         )
-        if (!mediaDir.exists()) mediaDir.mkdirs()
+        if (!mediaDir.exists()) {
+            val wasCreated = mediaDir.mkdirs()
+            if (!wasCreated) {
+                Log.e("FileHelper", "Failed to create media directory: ${mediaDir.absolutePath}")
+            }
+        }
         return mediaDir
     }
 
@@ -68,6 +76,38 @@ class FileHelper(private val context: Context) {
         }
     }.flowOn(Dispatchers.IO)
 
+    fun moveVideosToAppDirectory(uris: List<Uri>): List<File> {
+        val movedFiles = mutableListOf<File>()
+        val contentResolver = context.contentResolver
 
-    fun isFileExist(filePath: String): Boolean = File(filePath).exists()
+        for (uri in uris) {
+            try {
+                val fileName = getFileNameFromUri(uri, contentResolver) ?: continue
+                val destFile = File(getAppDirectory(), fileName)
+                if (destFile.exists()) continue
+
+                contentResolver.openInputStream(uri)?.use { inputStream ->
+                    FileOutputStream(destFile).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+
+                movedFiles.add(destFile)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        return movedFiles
+    }
+
+    private fun getFileNameFromUri(uri: Uri, contentResolver: ContentResolver): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        return cursor?.use {
+            val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
+            cursor.getString(nameIndex)
+        }
+    }
+
 }

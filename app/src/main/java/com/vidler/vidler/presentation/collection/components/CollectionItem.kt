@@ -64,7 +64,7 @@ fun CollectionItem(modifier: Modifier = Modifier, videoItem: Video) {
         Column {
             Text(
                 text = videoItem.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

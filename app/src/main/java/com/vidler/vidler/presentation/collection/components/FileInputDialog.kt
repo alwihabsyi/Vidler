@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,7 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 
 @Composable
-fun FileInputDialog(modifier: Modifier = Modifier, showDialog: Boolean, onDismiss: () -> Unit) {
+fun FileInputDialog(modifier: Modifier = Modifier, showDialog: Boolean, onStoragePic: (List<Uri>) -> Unit,onDismiss: () -> Unit) {
     var videoUri by remember { mutableStateOf<Uri?>(null) }
     var isUrlSelected by remember { mutableStateOf(false) }
     var urlInput by remember { mutableStateOf(TextFieldValue()) }
@@ -74,8 +75,8 @@ fun FileInputDialog(modifier: Modifier = Modifier, showDialog: Boolean, onDismis
                 }
 
                 if (!isUrlSelected) {
-                    StorageInputDialog { uri ->
-                        videoUri = uri
+                    StorageInputDialog { uris ->
+                        onStoragePic(uris)
                         onDismiss()
                     }
                 }
@@ -112,21 +113,22 @@ fun UrlInputDialog(urlInput: TextFieldValue, onSubmit: (TextFieldValue) -> Unit)
 }
 
 @Composable
-fun StorageInputDialog(onUriSelected: (Uri) -> Unit) {
-    val pickVideo =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                onUriSelected(it)
+fun StorageInputDialog(onUrisSelected: (List<Uri>) -> Unit) {
+    val pickVideos =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris: List<Uri> ->
+            if (uris.isNotEmpty()) {
+                onUrisSelected(uris)
             }
         }
 
     Button(
-        colors = ButtonColors(
-            MaterialTheme.colorScheme.onSurfaceVariant,
-            Color.White,
-            disabledContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
-            disabledContentColor = Color.White
-        ), shape = RoundedCornerShape(10.dp), onClick = { pickVideo.launch("video/*") }) {
-        Text("Select Video from Storage")
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            contentColor = Color.White
+        ),
+        shape = RoundedCornerShape(10.dp),
+        onClick = { pickVideos.launch(arrayOf("video/*")) }
+    ) {
+        Text("Select Videos from Storage")
     }
 }
