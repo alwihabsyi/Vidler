@@ -26,6 +26,7 @@ import com.vidler.vidler.presentation.collection.CollectionScreen
 import com.vidler.vidler.presentation.collection.CollectionViewModel
 import com.vidler.vidler.presentation.common.GlobalSnackbarHost
 import com.vidler.vidler.presentation.home.HomeScreen
+import com.vidler.vidler.presentation.home.HomeViewModel
 import com.vidler.vidler.presentation.navgraph.Route
 import com.vidler.vidler.presentation.schedule.ScheduleScreen
 import com.vidler.vidler.presentation.schedule.ScheduleViewModel
@@ -83,7 +84,8 @@ fun AppNavigatorScreen() {
             modifier = Modifier.padding(bottom = bottomPadding, top = 40.dp)
         ) {
             composable(Route.HomeScreen.route) {
-                HomeScreen()
+                val viewModel: HomeViewModel = koinViewModel()
+                HomeScreen(state = viewModel.state.value)
             }
             composable(Route.CollectionScreen.route) {
                 val viewModel: CollectionViewModel = koinViewModel()

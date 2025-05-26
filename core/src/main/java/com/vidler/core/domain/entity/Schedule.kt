@@ -11,5 +11,6 @@ data class Schedule(
     val name: String,
     val videos: List<Video>,
     val startTime: Date,
-    val endTime: Date
+    val endTime: Date,
+    val createdAt: Date = Date()
 )
