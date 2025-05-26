@@ -28,6 +28,8 @@ import com.vidler.vidler.presentation.common.GlobalSnackbarHost
 import com.vidler.vidler.presentation.home.HomeScreen
 import com.vidler.vidler.presentation.navgraph.Route
 import com.vidler.vidler.presentation.schedule.ScheduleScreen
+import com.vidler.vidler.presentation.schedule.ScheduleViewModel
+import com.vidler.vidler.presentation.schedule.CreateScheduleScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,9 +43,8 @@ fun AppNavigatorScreen() {
     }
     val navController = rememberNavController()
     val backStackState = navController.currentBackStackEntryAsState().value
-    var selectedItem by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    val currentRoute = backStackState?.destination?.route
     selectedItem = remember(key1 = backStackState) {
         when (backStackState?.destination?.route) {
             Route.HomeScreen.route -> 0
@@ -55,22 +56,25 @@ fun AppNavigatorScreen() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {
-            AppBottomNavigation(
-                items = bottomNavigationItems, selected = selectedItem, onItemClicked = { index ->
-                    when (index) {
-                        0 -> navigateToTab(
-                            navController = navController, route = Route.HomeScreen.route
-                        )
+            if (currentRoute != Route.CreateScheduleScreen.route)
+                AppBottomNavigation(
+                    items = bottomNavigationItems,
+                    selected = selectedItem,
+                    onItemClicked = { index ->
+                        when (index) {
+                            0 -> navigateToTab(
+                                navController = navController, route = Route.HomeScreen.route
+                            )
 
-                        1 -> navigateToTab(
-                            navController = navController, route = Route.CollectionScreen.route
-                        )
+                            1 -> navigateToTab(
+                                navController = navController, route = Route.CollectionScreen.route
+                            )
 
-                        2 -> navigateToTab(
-                            navController = navController, route = Route.ScheduleScreen.route
-                        )
-                    }
-                })
+                            2 -> navigateToTab(
+                                navController = navController, route = Route.ScheduleScreen.route
+                            )
+                        }
+                    })
         }) {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
@@ -86,7 +90,23 @@ fun AppNavigatorScreen() {
                 CollectionScreen(state = viewModel.state.value, onEvent = viewModel::onEvent)
             }
             composable(Route.ScheduleScreen.route) {
-                ScheduleScreen()
+                val viewModel: ScheduleViewModel = koinViewModel()
+                ScheduleScreen(
+                    state = viewModel.state.value,
+                    onEvent = viewModel::onEvent,
+                    navigateToCreateSchedule = {
+                        navController.navigate(Route.CreateScheduleScreen.route)
+                    }
+                )
+            }
+            composable(Route.CreateScheduleScreen.route) {
+                val viewModel: ScheduleViewModel = koinViewModel()
+                val videos = koinViewModel<CollectionViewModel>().state.value.videos
+                CreateScheduleScreen(
+                    videos = videos,
+                    onEvent = viewModel::onEvent,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
 

@@ -8,4 +8,5 @@ sealed class Route(
     data object HomeScreen: Route("homeScreen")
     data object CollectionScreen: Route("collectionScreen")
     data object ScheduleScreen: Route("scheduleScreen")
+    data object CreateScheduleScreen: Route("createScheduleScreen")
 }

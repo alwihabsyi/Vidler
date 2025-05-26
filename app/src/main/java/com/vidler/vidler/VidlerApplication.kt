@@ -1,7 +1,9 @@
 package com.vidler.vidler
 
 import android.app.Application
+import com.vidler.core.di.databaseModule
 import com.vidler.core.di.helperModule
+import com.vidler.core.di.repositoryModule
 import com.vidler.vidler.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -17,7 +19,9 @@ class VidlerApplication: Application() {
             androidContext(this@VidlerApplication)
             modules(listOf(
                 viewModelModule,
-                helperModule
+                helperModule,
+                databaseModule,
+                repositoryModule
             ))
         }
     }
