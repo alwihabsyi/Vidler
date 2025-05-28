@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.vidler.core.domain.entity.Schedule
 import com.vidler.vidler.util.toDateString
 import java.util.Date
+import java.util.UUID
 
 @Composable
 fun ScheduleItem(
@@ -117,7 +118,7 @@ fun ScheduleItem(
 private fun ScheduleItemPreview() {
     ScheduleItem(
         scheduleItem = Schedule(
-            id = 1,
+            id = UUID.randomUUID().toString(),
             name = "Jadwal Preview",
             videos = emptyList(),
             startTime = Date(),

@@ -3,11 +3,12 @@ package com.vidler.core.domain.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
+import java.util.UUID
 
 @Entity(tableName = "schedule")
 data class Schedule(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
     val videos: List<Video>,
     val startTime: Date,

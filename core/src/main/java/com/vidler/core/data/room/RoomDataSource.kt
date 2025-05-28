@@ -8,6 +8,7 @@ class RoomDataSource(
 ) {
 
     fun getSchedule() = scheduleDao.getSchedules()
+    fun getScheduleById(id: String) = scheduleDao.getScheduleById(id)
     suspend fun insertSchedule(schedule: Schedule) = scheduleDao.insertSchedule(schedule)
-    suspend fun deleteSchedule(scheduleId: Int) = scheduleDao.deleteSchedule(scheduleId)
+    suspend fun deleteSchedule(scheduleId: String) = scheduleDao.deleteSchedule(scheduleId)
 }

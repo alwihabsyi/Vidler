@@ -12,9 +12,12 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedule")
     fun getSchedules(): Flow<List<Schedule>>
 
+    @Query("SELECT * FROM schedule WHERE id = :id")
+    fun getScheduleById(id: String): Flow<Schedule?>
+
     @Insert
     suspend fun insertSchedule(schedule: Schedule)
 
     @Query("DELETE FROM schedule WHERE id = :scheduleId")
-    suspend fun deleteSchedule(scheduleId: Int)
+    suspend fun deleteSchedule(scheduleId: String)
 }

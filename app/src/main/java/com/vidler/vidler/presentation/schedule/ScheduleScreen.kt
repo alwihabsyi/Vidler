@@ -1,5 +1,6 @@
 package com.vidler.vidler.presentation.schedule
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +23,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vidler.vidler.presentation.schedule.components.ScheduleItem
+import com.vidler.vidler.presentation.video.VideoPlayerActivity
 
 @Composable
 fun ScheduleScreen(
@@ -34,6 +37,8 @@ fun ScheduleScreen(
     onEvent: (ScheduleEvent) -> Unit,
     navigateToCreateSchedule: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -76,7 +81,12 @@ fun ScheduleScreen(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp),
                             scheduleItem = schedule,
-                            onItemClick = {  },
+                            onItemClick = {
+                                context.startActivity(Intent(context, VideoPlayerActivity::class.java).apply {
+                                    putExtra("schedule_id", schedule.id)
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                })
+                            },
                             onDeleteClick = {
                                 onEvent(ScheduleEvent.OnDeleteSchedule(schedule.id))
                             }

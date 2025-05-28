@@ -34,7 +34,7 @@ class ScheduleViewModel(
         }
     }
 
-    private fun deleteSchedule(scheduleId: Int) = viewModelScope.launch {
+    private fun deleteSchedule(scheduleId: String) = viewModelScope.launch {
         scheduleRepository.delete(scheduleId)
     }
 

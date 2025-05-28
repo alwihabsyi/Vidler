@@ -1,6 +1,7 @@
 package com.vidler.core.di
 
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.vidler.core.data.repository.ScheduleRepositoryImpl
 import com.vidler.core.data.room.AppDatabase
 import com.vidler.core.data.room.RoomDataSource
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 val helperModule = module {
     single { FileHelper(androidContext()) }
     single { DownloadHelper(androidContext(), get()) }
+    single { WorkManager.getInstance(androidContext()) }
 }
 
 val databaseModule = module {
@@ -25,5 +27,5 @@ val databaseModule = module {
 }
 
 val repositoryModule = module {
-    single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }
+    single<ScheduleRepository> { ScheduleRepositoryImpl(get(), get()) }
 }
